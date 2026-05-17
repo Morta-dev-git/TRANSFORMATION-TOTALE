@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Transformation Fit Pro — Analyse Repas + Suivi Complet</title>
+  <title>Transformation Fit Pro — Programme personnalisable</title>
   <style>
     * {
       margin: 0;
@@ -34,7 +34,7 @@
     .stats-banner {
       border-radius: 2rem;
       padding: 2rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       text-align: center;
       border: 1px solid;
     }
@@ -45,6 +45,34 @@
     .stat { background: #00000055; padding: 0.5rem 1.2rem; border-radius: 2rem; font-weight: 600; }
     body.theme-clair .stat { background: #ffffffaa; }
     .stat span { font-size: 1.6rem; font-weight: 800; color: #facc15; }
+
+    .personal-card {
+      background: #0f172a;
+      border-radius: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+      border: 1px solid;
+    }
+    body.theme-sombre .personal-card { background: #1e293b; border-color: #3b4a6b; }
+    body.theme-clair .personal-card { background: #e2e8f0; border-color: #cbd5e1; }
+    .personal-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #0f172a80;
+      padding: 0.5rem 1.2rem;
+      border-radius: 3rem;
+      font-weight: 600;
+    }
+    body.theme-clair .personal-item { background: #ffffffaa; }
+    .personal-item input { width: 70px; text-align: center; font-weight: bold; padding: 0.3rem; border-radius: 2rem; }
+    .edit-btn { background: #3b82f6; border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 2rem; cursor: pointer; font-weight: bold; }
+    .edit-btn:hover { background: #2563eb; transform: scale(0.97); }
 
     .card, .progress-section, .advice-box {
       border-radius: 1.8rem;
@@ -67,13 +95,13 @@
     .danger-btn:hover { background: #ef4444; color: white; }
     .action-btn { background: #facc15; color: #0f172a; border: none; padding: 0.3rem 1rem; border-radius: 2rem; font-weight: bold; cursor: pointer; }
 
-    .exercise-item, .meal-card, .tip-item, .history-item {
+    .exercise-item {
       background: #0a0f1f;
       border-radius: 1.2rem;
       padding: 0.8rem;
       margin-bottom: 0.6rem;
     }
-    body.theme-clair .exercise-item, body.theme-clair .meal-card, body.theme-clair .tip-item, body.theme-clair .history-item { background: #f8fafc; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    body.theme-clair .exercise-item { background: #f8fafc; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
     .rpe-stars { color: #facc15; font-size: 1.2rem; cursor: pointer; letter-spacing: 2px; }
     input, select, textarea { padding: 0.4rem 0.6rem; border-radius: 1rem; border: 1px solid #ccc; background: #1e293b; color: white; }
@@ -101,475 +129,334 @@
     body.theme-clair .repas-analyzer { background: #f1f5f9; }
     .repas-result { margin-top: 1rem; padding: 0.8rem; border-radius: 1rem; background: #1e293b; }
     body.theme-clair .repas-result { background: #e2e8f0; }
+    .history-item, .meal-card, .tip-item {
+      background: #0a0f1f;
+      border-radius: 1.2rem;
+      padding: 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+    body.theme-clair .history-item, body.theme-clair .meal-card, body.theme-clair .tip-item { background: #f8fafc; }
+    .history-container { max-height: 250px; overflow-y: auto; }
     footer { text-align: center; margin-top: 1.5rem; opacity: 0.7; font-size: 0.8rem; }
     
-    .history-container { max-height: 250px; overflow-y: auto; }
+    .exercise-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 0.5rem; }
+    .icon-btn:hover { background: #ffffff20; }
+    .edit-ex-btn { color: #3b82f6; }
+    .delete-ex-btn { color: #ef4444; }
   </style>
 </head>
 <body class="theme-sombre">
 <div class="container">
-  <!-- Bannière -->
+  <!-- BANNIÈRE -->
   <div class="stats-banner">
     <h1>🔥 TRANSFORMATION TOTALE</h1>
-    <p>🎯 Perdre 10 kg de gras + Gagner 5 kg de muscle • 8 à 18 mois</p>
+    <p>🎯 Objectif : Perte de gras + Gain musculaire • Transformation durable</p>
     <p style="font-style: italic; color: #facc15;">⚡ "La constance transforme l'impossible en possible"</p>
     <div class="stats-numbers">
-      <div class="stat">⚖️ POIDS : <span id="currentWeightDisplay">80.0</span> kg</div>
+      <div class="stat">⚖️ POIDS ACTUEL : <span id="currentWeightDisplay">80.0</span> kg</div>
+      <div class="stat">📏 TAILLE : <span id="heightDisplay">168</span> cm</div>
       <div class="stat">💪 MUSCLE : <span id="muscleGainDisplay">0</span> / 5 kg</div>
     </div>
   </div>
 
-  <!-- Progression avec boutons + et - -->
+  <!-- PERSONNALISATION -->
+  <div class="personal-card">
+    <div class="personal-item"><span>⚖️ Poids initial :</span><input type="number" id="initialWeightInput" step="0.5" value="80"><span>kg</span><button id="saveWeightBtn" class="edit-btn">✓ Modifier</button></div>
+    <div class="personal-item"><span>📏 Taille :</span><input type="number" id="heightInput" step="1" value="168"><span>cm</span><button id="saveHeightBtn" class="edit-btn">✓ Modifier</button></div>
+  </div>
+
+  <!-- PROGRÈS -->
   <div class="progress-section">
     <h3>📈 MES PROGRÈS QUOTIDIENS</h3>
     <div class="progress-grid">
-      <div class="progress-card">
-        <div>🔥 Perte de gras</div>
-        <span id="fatLostValue">0</span> kg / 10 kg
-        <div class="progress-bar-bg"><div class="progress-fill" id="fatFill"></div></div>
-        <div class="btn-group">
-          <button class="small-btn" id="addFatBtn">+0.5 kg</button>
-          <button class="small-btn danger-btn" id="subFatBtn">-0.5 kg</button>
-          <button class="small-btn danger-btn" id="resetFatBtn">Reset</button>
-        </div>
-      </div>
-      <div class="progress-card">
-        <div>💪 Gain musculaire</div>
-        <span id="muscleValue">0</span> kg / 5 kg
-        <div class="progress-bar-bg"><div class="progress-fill" id="muscleFill"></div></div>
-        <div class="btn-group">
-          <button class="small-btn" id="addMuscleBtn">+0.5 kg</button>
-          <button class="small-btn danger-btn" id="subMuscleBtn">-0.5 kg</button>
-          <button class="small-btn danger-btn" id="resetMuscleBtn">Reset</button>
-        </div>
-      </div>
-      <div class="progress-card">
-        <div>📆 Constance (jours)</div>
-        <span id="workoutDaysCounter">0</span> jours
-        <div class="progress-bar-bg"><div class="progress-fill" id="daysFill"></div></div>
-        <div class="btn-group">
-          <button class="small-btn" id="addWorkoutBtn">+1 jour</button>
-          <button class="small-btn danger-btn" id="subWorkoutBtn">-1 jour</button>
-          <button class="small-btn danger-btn" id="resetDaysBtn">Reset</button>
-        </div>
-      </div>
-      <div class="progress-card">
-        <div>💧 Hydratation</div>
-        <span id="waterAmount">0</span> ml / 3000 ml
-        <div class="progress-bar-bg"><div class="progress-fill" id="waterFill" style="background: #3b82f6;"></div></div>
-        <div class="btn-group">
-          <button class="small-btn" id="addWaterBtn">+250 ml</button>
-          <button class="small-btn danger-btn" id="subWaterBtn">-250 ml</button>
-          <button class="small-btn danger-btn" id="resetWaterBtn">Reset</button>
-        </div>
-      </div>
+      <div class="progress-card"><div>🔥 Perte de gras</div><span id="fatLostValue">0</span> kg / 10 kg<div class="progress-bar-bg"><div class="progress-fill" id="fatFill"></div></div><div class="btn-group"><button class="small-btn" id="addFatBtn">+0.5 kg</button><button class="small-btn danger-btn" id="subFatBtn">-0.5 kg</button><button class="small-btn danger-btn" id="resetFatBtn">Reset</button></div></div>
+      <div class="progress-card"><div>💪 Gain musculaire</div><span id="muscleValue">0</span> kg / 5 kg<div class="progress-bar-bg"><div class="progress-fill" id="muscleFill"></div></div><div class="btn-group"><button class="small-btn" id="addMuscleBtn">+0.5 kg</button><button class="small-btn danger-btn" id="subMuscleBtn">-0.5 kg</button><button class="small-btn danger-btn" id="resetMuscleBtn">Reset</button></div></div>
+      <div class="progress-card"><div>📆 Constance (jours)</div><span id="workoutDaysCounter">0</span> jours<div class="progress-bar-bg"><div class="progress-fill" id="daysFill"></div></div><div class="btn-group"><button class="small-btn" id="addWorkoutBtn">+1 jour</button><button class="small-btn danger-btn" id="subWorkoutBtn">-1 jour</button><button class="small-btn danger-btn" id="resetDaysBtn">Reset</button></div></div>
+      <div class="progress-card"><div>💧 Hydratation</div><span id="waterAmount">0</span> ml / 3000 ml<div class="progress-bar-bg"><div class="progress-fill" id="waterFill" style="background:#3b82f6"></div></div><div class="btn-group"><button class="small-btn" id="addWaterBtn">+250 ml</button><button class="small-btn danger-btn" id="subWaterBtn">-250 ml</button><button class="small-btn danger-btn" id="resetWaterBtn">Reset</button></div></div>
     </div>
   </div>
 
-  <!-- Calculateur + analyseur de repas -->
+  <!-- CALCULATEUR + ANALYSEUR REPAS -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.8rem; margin-bottom: 1.5rem;">
     <div class="card">
       <h2>🧮 Calculateur nutritionnel</h2>
-      <div style="margin-bottom: 1rem;">
-        <label>Niveau d'activité : </label>
-        <select id="activityLevel">
-          <option value="1.2">Sédentaire</option>
-          <option value="1.375" selected>Léger (1-3x/semaine)</option>
-          <option value="1.55">Modéré (3-5x/semaine)</option>
-          <option value="1.725">Très actif (6-7x/semaine)</option>
-        </select>
-      </div>
-      <div><strong>⚡ Calories quotidiennes : <span id="calorieNeed">0</span> kcal</strong></div>
-      <div><strong>🥚 Protéines recommandées : <span id="proteinNeed">0</span> g/jour</strong></div>
-      <hr style="margin: 1rem 0;">
-      <h3>🛒 Liste de courses auto</h3>
-      <div id="shoppingList"></div>
+      <select id="activityLevel"><option value="1.2">Sédentaire</option><option value="1.375" selected>Léger</option><option value="1.55">Modéré</option><option value="1.725">Très actif</option></select>
+      <div><strong>⚡ Calories : <span id="calorieNeed">0</span> kcal</strong></div>
+      <div><strong>🥚 Protéines : <span id="proteinNeed">0</span> g/jour</strong></div>
+      <div><strong>📊 IMC : <span id="imcDisplay">0</span></strong></div>
+      <hr><h3>🛒 Liste de courses</h3><div id="shoppingList"></div>
     </div>
-
     <div class="card">
       <h2>🍽️ ANALYSEUR DE REPAS</h2>
-      <p>Décris ce que tu as mangé, je calcule les protéines et calories estimées !</p>
-      <div class="repas-analyzer">
-        <textarea id="mealDescription" rows="3" placeholder="Ex: 200g poulet, 150g riz, 1 oeuf, 100g brocoli..." style="width:100%; border-radius:1rem; padding:0.6rem;"></textarea>
-        <div class="btn-group" style="margin-top: 0.8rem;">
-          <button id="analyzeMealBtn" class="action-btn">🔍 Analyser le repas</button>
-          <button id="addToLogBtn" class="small-btn">📝 Ajouter à l'historique</button>
-        </div>
-        <div id="mealResult" class="repas-result" style="margin-top: 1rem;">
-          <i>Aucune analyse pour le moment</i>
-        </div>
-      </div>
-      <hr style="margin: 1rem 0;">
-      <h3>📜 Historique des repas analysés</h3>
-      <div id="mealHistory" class="history-container"></div>
-      <button id="clearHistoryBtn" class="small-btn danger-btn" style="margin-top: 0.5rem;">Effacer l'historique</button>
+      <textarea id="mealDescription" rows="3" placeholder="Ex: 150g poulet, 200g riz complet, 2 oeufs..."></textarea>
+      <div class="btn-group"><button id="analyzeMealBtn" class="action-btn">🔍 Analyser</button><button id="addToLogBtn" class="small-btn">📝 Ajouter</button></div>
+      <div id="mealResult" class="repas-result"><i>Aucune analyse</i></div>
+      <hr><h3>📜 Historique</h3><div id="mealHistory" class="history-container"></div><button id="clearHistoryBtn" class="small-btn danger-btn">Effacer</button>
     </div>
   </div>
 
-  <!-- Programme d'entraînement complet -->
+  <!-- PROGRAMME D'ENTRAÎNEMENT AVEC BOUTONS PERSO + SUPPRESSION + RESET -->
   <div class="card">
     <h2>🏋️‍♂️ PROGRAMME D'ENTRAÎNEMENT COMPLET</h2>
     <div id="exercisesContainer" style="max-height: 500px; overflow-y: auto;"></div>
     <div class="flex-between" style="margin-top: 1.2rem;">
-      <button id="addCustomExerciseBtn" class="action-btn">➕ Ajouter un exercice perso</button>
-      <button id="autoProgressBtn" class="ctrl-btn">⚡ Progression automatique</button>
-      <button id="resetAllExercisesBtn" class="small-btn danger-btn">Reset tous les exos</button>
+      <button id="addCustomExerciseBtn" class="action-btn">➕ Ajouter un exercice</button>
+      <button id="autoProgressBtn" class="ctrl-btn">⚡ Progression auto</button>
+      <button id="resetProgramBtn" class="small-btn danger-btn">🔄 Reset programme complet</button>
     </div>
+    <p style="font-size:0.75rem; margin-top:0.5rem;">✏️ Cliquez sur ✏️ pour modifier un exercice | 🗑️ pour le supprimer | ⭐ pour la difficulté (RPE)</p>
   </div>
 
-  <!-- Conseils clés (sans "note tes performances") -->
+  <!-- CONSEILS -->
   <div class="advice-box" id="tipsBox"></div>
 
-  <!-- Barre de contrôle en bas -->
+  <!-- CONTROLES BAS -->
   <div class="bottom-controls">
-    <button class="ctrl-btn" id="themeToggleBtn">🌓 Mode Clair/Sombre</button>
-    <div class="zoom-group">
-      <button class="zoom-btn" id="zoomOutBtn">A-</button>
-      <span id="zoomLevel">100%</span>
-      <button class="zoom-btn" id="zoomInBtn">A+</button>
-      <button class="zoom-btn" id="zoomResetBtn">Reset</button>
-    </div>
-    <button class="ctrl-btn" id="exportDataBtn">💾 Exporter données (.txt)</button>
-    <button class="ctrl-btn" id="triggerImportBtn">📂 Importer fichier texte</button>
-    <input type="file" id="importFileInput" accept=".txt" style="display: none;">
+    <button class="ctrl-btn" id="themeToggleBtn">🌓 Mode</button>
+    <div class="zoom-group"><button class="zoom-btn" id="zoomOutBtn">A-</button><span id="zoomLevel">100%</span><button class="zoom-btn" id="zoomInBtn">A+</button><button class="zoom-btn" id="zoomResetBtn">Reset</button></div>
+    <button class="ctrl-btn" id="exportDataBtn">💾 Exporter (.txt)</button>
+    <button class="ctrl-btn" id="triggerImportBtn">📂 Importer</button>
+    <input type="file" id="importFileInput" accept=".txt" style="display:none;">
   </div>
-  <footer>💪 Discipline + Constance + Nutrition Intelligente = Transformation Puissante</footer>
+  <footer>💪 Discipline + Constance + Nutrition = Transformation</footer>
 </div>
 
 <script>
-  // ========== DONNÉES ==========
-  let fatLost = 0, muscleGained = 0, workoutDays = 0, waterMl = 0;
-  let exercises = [
-    { name: "🏃‍♂️ Running", target: 10, unit: "km", current: 0, rpe: 0 },
-    { name: "💪 Push-Ups", target: 150, unit: "reps", current: 0, rpe: 0 },
-    { name: "🤸 Pull-Ups", target: 100, unit: "reps", current: 0, rpe: 0 },
-    { name: "🦵 Squats", target: 200, unit: "reps", current: 0, rpe: 0 },
-    { name: "🏋️ Dips", target: 60, unit: "reps", current: 0, rpe: 0 },
-    { name: "🏃‍♂️ Lunges", target: 50, unit: "reps", current: 0, rpe: 0 },
-    { name: "⏱️ Plank", target: 120, unit: "sec", current: 0, rpe: 0 },
-    { name: "⛰️ Jump Rope", target: 10, unit: "min", current: 0, rpe: 0 }
-  ];
-  let mealHistory = []; // { description, calories, protein, date }
-  let currentZoom = 100, theme = "sombre";
-  let lastAnalyzed = null;
-
-  // ========== PERSISTANCE ==========
-  function saveAll() {
-    const data = { fatLost, muscleGained, workoutDays, waterMl, exercises, mealHistory, theme, currentZoom };
-    localStorage.setItem("fit_app_final_v2", JSON.stringify(data));
-  }
-  function loadAll() {
-    const raw = localStorage.getItem("fit_app_final_v2");
-    if (raw) {
-      try {
-        const d = JSON.parse(raw);
-        fatLost = d.fatLost ?? 0; muscleGained = d.muscleGained ?? 0;
-        workoutDays = d.workoutDays ?? 0; waterMl = d.waterMl ?? 0;
-        exercises = d.exercises ?? exercises;
-        mealHistory = d.mealHistory ?? [];
-        theme = d.theme ?? "sombre"; currentZoom = d.currentZoom ?? 100;
-        exercises.forEach(e => { if (e.rpe === undefined) e.rpe = 0; });
-      } catch(e) {}
-    }
-    if (fatLost > 10) fatLost = 10; if (fatLost < 0) fatLost = 0;
-    if (muscleGained > 5) muscleGained = 5; if (muscleGained < 0) muscleGained = 0;
-    if (workoutDays < 0) workoutDays = 0; if (waterMl < 0) waterMl = 0;
-    if (waterMl > 3000) waterMl = 3000;
-    applyTheme(); applyZoom();
-  }
-
-  function computeWeight() { return (80 - fatLost + muscleGained).toFixed(1); }
-
-  // ========== ANALYSEUR DE REPAS INTELLIGENT ==========
+  // BASE NUTRITION
   const foodDatabase = {
-    "poulet": { p: 25, cal: 165 }, "dinde": { p: 25, cal: 160 }, "boeuf": { p: 26, cal: 250 },
-    "steak": { p: 26, cal: 250 }, "poisson": { p: 22, cal: 180 }, "saumon": { p: 20, cal: 208 },
-    "thon": { p: 24, cal: 180 }, "sardine": { p: 24, cal: 180 }, "oeuf": { p: 6, cal: 70 },
-    "oeufs": { p: 6, cal: 70 }, "riz": { p: 2.5, cal: 130 }, "pates": { p: 5, cal: 150 },
-    "quinoa": { p: 4, cal: 120 }, "lentilles": { p: 9, cal: 116 }, "tofu": { p: 8, cal: 76 },
-    "fromage blanc": { p: 7, cal: 60 }, "yaourt grec": { p: 10, cal: 90 }, "pois chiches": { p: 7, cal: 139 },
-    "pain complet": { p: 4, cal: 80 }, "avocat": { p: 2, cal: 160 }, "brocoli": { p: 2.8, cal: 34 },
-    "legumes": { p: 1, cal: 25 }, "haricots": { p: 2, cal: 31 }, "patate douce": { p: 1.6, cal: 86 },
-    "pomme de terre": { p: 2, cal: 77 }, "banane": { p: 1.1, cal: 89 }, "noix": { p: 15, cal: 607 },
-    "amandes": { p: 21, cal: 579 }, "fromage": { p: 18, cal: 300 }, "lait": { p: 3.3, cal: 61 }
+    "poulet":{p:25,cal:165},"dinde":{p:25,cal:160},"boeuf":{p:26,cal:250},"steak":{p:26,cal:250},
+    "thon":{p:25,cal:125},"saumon":{p:21,cal:205},"poisson":{p:22,cal:180},"oeuf":{p:6.5,cal:72},"oeufs":{p:6.5,cal:72},
+    "fromage blanc":{p:9,cal:52},"yaourt grec":{p:10,cal:90},"lentilles":{p:8.5,cal:115},"pois chiches":{p:7,cal:139},
+    "avocat":{p:2,cal:160},"amandes":{p:21,cal:585},"noix":{p:14.5,cal:675},"brocoli":{p:2.8,cal:34},
+    "legumes verts":{p:3,cal:30},"riz complet":{p:7.5,cal:350},"riz":{p:7.5,cal:350},"patate douce":{p:1.8,cal:88},
+    "tofu":{p:8,cal:76},"quinoa":{p:4.4,cal:120},"pain complet":{p:4,cal:80}
   };
-
-  function analyzeMeal(description) {
-    const text = description.toLowerCase();
-    let totalProtein = 0, totalCalories = 0;
-    let found = false;
-    
-    for (let [food, values] of Object.entries(foodDatabase)) {
-      if (text.includes(food)) {
-        let grams = 100;
-        const gramMatch = text.match(new RegExp(`(\\d+)\\s*g\\s*${food}`, 'i'));
-        const gramMatch2 = text.match(new RegExp(`${food}\\s+(\\d+)\\s*g`, 'i'));
-        if (gramMatch) grams = parseInt(gramMatch[1]);
-        else if (gramMatch2) grams = parseInt(gramMatch2[1]);
-        totalProtein += values.p * (grams / 100);
-        totalCalories += values.cal * (grams / 100);
-        found = true;
+  function extractQuantity(text,food){let m=text.match(new RegExp(`(\\d+(?:\\.\\d+)?)\\s*g\\s*${food}`,'i'))||text.match(new RegExp(`${food}\\s+(\\d+(?:\\.\\d+)?)\\s*g`,'i'));return m?parseFloat(m[1]):null;}
+  function analyzeMeal(desc){
+    let text=desc.toLowerCase(),totalP=0,totalC=0,details=[];
+    for(let[key,val] of Object.entries(foodDatabase)){
+      if(text.includes(key)){
+        let q=extractQuantity(text,key),factor=1,aq=100;
+        if(key==="oeuf"||key==="oeufs"){let egg=text.match(/(\d+)\s*oeufs?/i);if(egg){let nb=parseInt(egg[1]);aq=nb*50;factor=aq/100;}else if(q){aq=q;factor=aq/100;}else{factor=0.5;aq=50;}}
+        else if(q){aq=q;factor=aq/100;}else{factor=1;}
+        totalP+=val.p*factor;totalC+=val.cal*factor;details.push(`${key} (${aq}g)`);
       }
     }
-    
-    if (!found) {
-      totalProtein = 15;
-      totalCalories = 400;
+    if(details.length===0){totalP=15;totalC=400;details=["Repas générique"];}
+    return {protein:Math.round(totalP),calories:Math.round(totalC),details};
+  }
+
+  // DONNÉES PRINCIPALES
+  let initialWeight=80,height=168,fatLost=0,muscleGained=0,workoutDays=0,waterMl=0;
+  let exercises=[
+    {name:"🏃‍♂️ Running",target:10,unit:"km",current:0,rpe:0},
+    {name:"💪 Push-Ups",target:150,unit:"reps",current:0,rpe:0},
+    {name:"🤸 Pull-Ups",target:100,unit:"reps",current:0,rpe:0},
+    {name:"🦵 Squats",target:200,unit:"reps",current:0,rpe:0},
+    {name:"🏋️ Dips",target:60,unit:"reps",current:0,rpe:0},
+    {name:"🏃‍♂️ Lunges",target:50,unit:"reps",current:0,rpe:0},
+    {name:"⏱️ Plank",target:120,unit:"sec",current:0,rpe:0},
+    {name:"⛰️ Jump Rope",target:10,unit:"min",current:0,rpe:0}
+  ];
+  let mealHistory=[];
+  let currentZoom=100,theme="sombre";
+
+  function saveAll(){localStorage.setItem("fit_app_v5",JSON.stringify({initialWeight,height,fatLost,muscleGained,workoutDays,waterMl,exercises,mealHistory,theme,currentZoom}));}
+  function loadAll(){
+    let raw=localStorage.getItem("fit_app_v5");
+    if(raw){
+      let d=JSON.parse(raw);
+      initialWeight=d.initialWeight??80;height=d.height??168;fatLost=d.fatLost??0;muscleGained=d.muscleGained??0;
+      workoutDays=d.workoutDays??0;waterMl=d.waterMl??0;exercises=d.exercises??exercises;mealHistory=d.mealHistory??[];
+      theme=d.theme??"sombre";currentZoom=d.currentZoom??100;
+      exercises.forEach(e=>{if(e.rpe===undefined)e.rpe=0;});
     }
-    
-    return { protein: Math.round(totalProtein), calories: Math.round(totalCalories) };
+    document.getElementById("initialWeightInput").value=initialWeight;
+    document.getElementById("heightInput").value=height;
+    if(fatLost>10)fatLost=10;if(fatLost<0)fatLost=0;
+    if(muscleGained>5)muscleGained=5;if(muscleGained<0)muscleGained=0;
+    if(workoutDays<0)workoutDays=0;if(waterMl<0)waterMl=0;if(waterMl>3000)waterMl=3000;
+    applyTheme();applyZoom();
   }
-
-  function addMealToHistory(description, protein, calories) {
-    const date = new Date().toLocaleString();
-    mealHistory.unshift({ description: description.substring(0, 100), protein, calories, date });
-    if (mealHistory.length > 20) mealHistory.pop();
-    renderMealHistory();
-    saveAll();
-  }
-
-  function renderMealHistory() {
-    const container = document.getElementById("mealHistory");
-    if (mealHistory.length === 0) { container.innerHTML = "<i>Aucun repas enregistré.</i>"; return; }
-    container.innerHTML = mealHistory.map((m, idx) => `
-      <div class="history-item" style="margin-bottom:0.5rem;">
-        <div class="flex-between"><strong>🍽️ ${m.description.substring(0, 50)}</strong> <span style="font-size:0.7rem;">${m.date}</span></div>
-        <div>🥚 Protéines: ${m.protein}g | 🔥 Calories: ${m.calories} kcal</div>
-      </div>
-    `).join("");
-  }
-
-  // ========== UI PRINCIPALE ==========
-  function refreshUI() {
-    document.getElementById("currentWeightDisplay").innerText = computeWeight();
-    document.getElementById("muscleGainDisplay").innerText = muscleGained;
-    document.getElementById("fatLostValue").innerText = fatLost;
-    document.getElementById("muscleValue").innerText = muscleGained;
-    document.getElementById("workoutDaysCounter").innerText = workoutDays;
-    document.getElementById("waterAmount").innerText = waterMl;
-    document.getElementById("fatFill").style.width = (fatLost/10)*100+"%";
-    document.getElementById("muscleFill").style.width = (muscleGained/5)*100+"%";
-    document.getElementById("daysFill").style.width = Math.min((workoutDays/180)*100,100)+"%";
-    document.getElementById("waterFill").style.width = (waterMl/3000)*100+"%";
-    calcCaloriesAndProteins();
-    renderExercises();
-    saveAll();
-  }
-
-  function calcCaloriesAndProteins() {
-    let weight = 80 - fatLost + muscleGained;
-    let act = parseFloat(document.getElementById("activityLevel").value);
-    let bmr = 10 * weight + 6.25 * 168 - 5 * 25 + 5;
-    let tdee = bmr * act;
-    document.getElementById("calorieNeed").innerText = Math.round(tdee);
-    let protein = Math.round(weight * 1.8);
-    document.getElementById("proteinNeed").innerText = protein;
-    let html = `<ul style="margin-left:1rem;"><li>🍗 Poulet/Dinde: ~${Math.round(protein*0.3)}g protéines</li>
-    <li>🥚 Oeufs: 4-6/jour</li><li>🐟 Thon/Saumon: 2x/semaine</li>
-    <li>🥛 Fromage blanc 0%: 200g</li><li>🫘 Lentilles: 150g</li>
-    <li>🥑 Avocat, noix, amandes</li><li>🥦 Légumes verts</li><li>🍚 Riz complet/patate douce</li></ul>`;
-    document.getElementById("shoppingList").innerHTML = html;
-  }
-
-  function renderExercises() {
-    const container = document.getElementById("exercisesContainer");
-    container.innerHTML = "";
-    exercises.forEach((ex, idx) => {
-      const percent = ex.target > 0 ? (ex.current/ex.target)*100 : 0;
-      const completed = ex.current >= ex.target;
-      const stars = "⭐".repeat(ex.rpe) + "☆".repeat(5-ex.rpe);
-      const div = document.createElement("div");
-      div.className = "exercise-item";
-      div.innerHTML = `
-        <div class="flex-between"><strong>${ex.name}</strong><span>🎯 ${ex.target} ${ex.unit}</span></div>
-        <div class="flex-between" style="margin-top:0.3rem;">
-          <input type="number" id="ex_val_${idx}" value="${ex.current}" step="1" style="width:90px;">
-          <span>réalisé / ${ex.unit}</span>
-          <button class="action-btn update-ex" data-idx="${idx}">Mettre à jour</button>
-          <span style="font-size:0.8rem;">${percent.toFixed(0)}%</span> ${completed ? "✅" : ""}
+  function computeCurrentWeight(){return (initialWeight-fatLost+muscleGained).toFixed(1);}
+  function computeIMC(){let w=parseFloat(computeCurrentWeight()),h=height/100;return h>0?(w/(h*h)).toFixed(1):0;}
+  function addMealToHistory(desc,prot,cal,det){mealHistory.unshift({description:desc.substring(0,100),protein:prot,calories:cal,details:det?.join(", "),date:new Date().toLocaleString()});if(mealHistory.length>20)mealHistory.pop();renderMealHistory();saveAll();}
+  function renderMealHistory(){let c=document.getElementById("mealHistory");if(mealHistory.length===0){c.innerHTML="<i>Aucun repas</i>";return;}c.innerHTML=mealHistory.map(m=>`<div class="history-item"><div class="flex-between"><strong>🍽️ ${m.description.substring(0,50)}</strong><span style="font-size:0.7rem;">${m.date}</span></div><div>🥚 ${m.protein}g | 🔥 ${m.calories} kcal</div>${m.details?`<div style="font-size:0.7rem;">📊 ${m.details}</div>`:''}</div>`).join("");}
+  
+  // RENDER EXERCICES AVEC BOUTONS ÉDITER/SUPPRIMER
+  function renderExercises(){
+    let container=document.getElementById("exercisesContainer");
+    container.innerHTML="";
+    exercises.forEach((ex,idx)=>{
+      let percent=ex.target>0?(ex.current/ex.target)*100:0;
+      let completed=ex.current>=ex.target;
+      let stars="⭐".repeat(ex.rpe)+"☆".repeat(5-ex.rpe);
+      let div=document.createElement("div");
+      div.className="exercise-item";
+      div.innerHTML=`
+        <div class="flex-between">
+          <strong>${ex.name}</strong>
+          <div class="exercise-buttons">
+            <button class="icon-btn edit-ex-btn" data-idx="${idx}" title="Modifier exercice">✏️</button>
+            <button class="icon-btn delete-ex-btn" data-idx="${idx}" title="Supprimer exercice">🗑️</button>
+          </div>
         </div>
-        <div class="flex-between" style="margin-top:0.5rem;">
-          <span>💪 RPE 1-5 : </span><span class="rpe-stars" data-idx="${idx}">${stars}</span>
-        </div>
+        <div class="flex-between"><span>🎯 ${ex.target} ${ex.unit}</span><span>✅ réalisé: <input type="number" id="ex_val_${idx}" value="${ex.current}" step="1" style="width:70px;"> ${ex.unit}</span><button class="action-btn update-ex" data-idx="${idx}">Mettre à jour</button><span>${percent.toFixed(0)}%</span> ${completed?"✅":""}</div>
+        <div class="flex-between"><span>💪 RPE 1-5 : </span><span class="rpe-stars" data-idx="${idx}">${stars}</span></div>
       `;
       container.appendChild(div);
     });
-    document.querySelectorAll(".update-ex").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        let idx = parseInt(btn.dataset.idx);
-        let val = parseFloat(document.getElementById(`ex_val_${idx}`).value);
-        if(!isNaN(val)) exercises[idx].current = Math.max(0, val);
-        saveAll(); renderExercises(); refreshUI();
+    // Mise à jour valeur
+    document.querySelectorAll(".update-ex").forEach(btn=>{
+      btn.addEventListener("click",(e)=>{
+        let idx=parseInt(btn.dataset.idx);
+        let val=parseFloat(document.getElementById(`ex_val_${idx}`).value);
+        if(!isNaN(val)) exercises[idx].current=Math.max(0,val);
+        saveAll();renderExercises();refreshUI();
       });
     });
-    document.querySelectorAll(".rpe-stars").forEach(star => {
-      const idx = parseInt(star.dataset.idx);
-      star.addEventListener("click", (e) => {
-        const rect = star.getBoundingClientRect();
-        const starWidth = rect.width/5;
-        let newRpe = Math.floor((e.clientX - rect.left)/starWidth)+1;
-        if(newRpe>5) newRpe=5;
-        exercises[idx].rpe = newRpe;
-        saveAll(); renderExercises();
+    // RPE
+    document.querySelectorAll(".rpe-stars").forEach(star=>{
+      let idx=parseInt(star.dataset.idx);
+      star.addEventListener("click",(e)=>{
+        let rect=star.getBoundingClientRect(),starWidth=rect.width/5;
+        let newRpe=Math.floor((e.clientX-rect.left)/starWidth)+1;
+        if(newRpe>5)newRpe=5;
+        exercises[idx].rpe=newRpe;
+        saveAll();renderExercises();
+      });
+    });
+    // Éditer exercice
+    document.querySelectorAll(".edit-ex-btn").forEach(btn=>{
+      btn.addEventListener("click",(e)=>{
+        let idx=parseInt(btn.dataset.idx);
+        let ex=exercises[idx];
+        let newName=prompt("Nouveau nom de l'exercice:",ex.name);
+        if(newName && newName.trim()) ex.name=newName.trim();
+        let newTarget=parseFloat(prompt("Nouvel objectif:",ex.target));
+        if(!isNaN(newTarget) && newTarget>0) ex.target=newTarget;
+        let newUnit=prompt("Nouvelle unité (km, reps, min...):",ex.unit);
+        if(newUnit && newUnit.trim()) ex.unit=newUnit.trim();
+        saveAll();renderExercises();refreshUI();
+      });
+    });
+    // Supprimer exercice
+    document.querySelectorAll(".delete-ex-btn").forEach(btn=>{
+      btn.addEventListener("click",(e)=>{
+        let idx=parseInt(btn.dataset.idx);
+        if(exercises.length<=1){alert("Vous devez garder au moins un exercice !");return;}
+        if(confirm(`Supprimer l'exercice "${exercises[idx].name}" ?`)){
+          exercises.splice(idx,1);
+          saveAll();renderExercises();refreshUI();
+        }
       });
     });
   }
+  
+  // RESET PROGRAMME COMPLET (remet les exercices par défaut)
+  function resetProgram(){
+    if(confirm("⚠️ RESET COMPLET DU PROGRAMME : tous les exercices seront remis à l'état initial (Running, Push-Ups, Pull-Ups, Squats, Dips, Lunges, Plank, Jump Rope) avec leurs valeurs à zéro. Continuer ?")){
+      exercises=[
+        {name:"🏃‍♂️ Running",target:10,unit:"km",current:0,rpe:0},
+        {name:"💪 Push-Ups",target:150,unit:"reps",current:0,rpe:0},
+        {name:"🤸 Pull-Ups",target:100,unit:"reps",current:0,rpe:0},
+        {name:"🦵 Squats",target:200,unit:"reps",current:0,rpe:0},
+        {name:"🏋️ Dips",target:60,unit:"reps",current:0,rpe:0},
+        {name:"🏃‍♂️ Lunges",target:50,unit:"reps",current:0,rpe:0},
+        {name:"⏱️ Plank",target:120,unit:"sec",current:0,rpe:0},
+        {name:"⛰️ Jump Rope",target:10,unit:"min",current:0,rpe:0}
+      ];
+      saveAll();renderExercises();refreshUI();alert("Programme réinitialisé !");
+    }
+  }
 
-  // ========== ACTIONS AVEC + ET - ==========
-  function addFat() { if(fatLost+0.5<=10) fatLost+=0.5; refreshUI(); }
-  function subFat() { if(fatLost-0.5>=0) fatLost-=0.5; refreshUI(); }
-  function addMuscle() { if(muscleGained+0.5<=5) muscleGained+=0.5; refreshUI(); }
-  function subMuscle() { if(muscleGained-0.5>=0) muscleGained-=0.5; refreshUI(); }
-  function addWorkout() { workoutDays++; refreshUI(); }
-  function subWorkout() { if(workoutDays>0) workoutDays--; refreshUI(); }
-  function addWater() { waterMl = Math.min(3000, waterMl+250); refreshUI(); }
-  function subWater() { waterMl = Math.max(0, waterMl-250); refreshUI(); }
-  function resetFat() { if(confirm("Reset perte de gras ?")) { fatLost=0; refreshUI(); } }
-  function resetMuscle() { if(confirm("Reset gain musculaire ?")) { muscleGained=0; refreshUI(); } }
-  function resetDays() { if(confirm("Reset constance ?")) { workoutDays=0; refreshUI(); } }
-  function resetWater() { if(confirm("Reset hydratation ?")) { waterMl=0; refreshUI(); } }
-  function resetAllExercises() { if(confirm("Reset tous les exercices ?")) { exercises.forEach(e=>e.current=0); refreshUI(); } }
-  function addCustomExercise() {
-    let name = prompt("Nom de l'exercice (ex: Vélo, Natation)"); if(!name) return;
-    let target = parseFloat(prompt("Objectif","10")); if(isNaN(target)) target=10;
-    let unit = prompt("Unité (km, reps, minutes...)","reps");
-    exercises.push({ name, target, unit: unit||"reps", current:0, rpe:0 });
+  function refreshUI(){
+    document.getElementById("currentWeightDisplay").innerText=computeCurrentWeight();
+    document.getElementById("heightDisplay").innerText=height;
+    document.getElementById("muscleGainDisplay").innerText=muscleGained;
+    document.getElementById("fatLostValue").innerText=fatLost;
+    document.getElementById("muscleValue").innerText=muscleGained;
+    document.getElementById("workoutDaysCounter").innerText=workoutDays;
+    document.getElementById("waterAmount").innerText=waterMl;
+    document.getElementById("fatFill").style.width=(fatLost/10)*100+"%";
+    document.getElementById("muscleFill").style.width=(muscleGained/5)*100+"%";
+    document.getElementById("daysFill").style.width=Math.min((workoutDays/180)*100,100)+"%";
+    document.getElementById("waterFill").style.width=(waterMl/3000)*100+"%";
+    document.getElementById("imcDisplay").innerText=computeIMC();
+    calcCalories();
+    renderExercises();
+    saveAll();
+  }
+  function calcCalories(){
+    let w=parseFloat(computeCurrentWeight()),act=parseFloat(document.getElementById("activityLevel").value);
+    let bmr=10*w+6.25*height-5*25+5,tdee=bmr*act;
+    document.getElementById("calorieNeed").innerText=Math.round(tdee);
+    let prot=Math.round(w*1.8);
+    document.getElementById("proteinNeed").innerText=prot;
+    document.getElementById("shoppingList").innerHTML=`<ul><li>🍗 Poulet: ~${Math.round(prot*0.3)}g</li><li>🥚 Oeufs: 4-6</li><li>🐟 Thon/Saumon</li><li>🥛 Fromage blanc</li><li>🫘 Lentilles</li><li>🥑 Avocat, noix</li><li>🥦 Légumes verts</li><li>🍚 Riz complet</li></ul>`;
+  }
+
+  // ACTIONS
+  function addFat(){if(fatLost+0.5<=10)fatLost+=0.5;refreshUI();}
+  function subFat(){if(fatLost-0.5>=0)fatLost-=0.5;refreshUI();}
+  function addMuscle(){if(muscleGained+0.5<=5)muscleGained+=0.5;refreshUI();}
+  function subMuscle(){if(muscleGained-0.5>=0)muscleGained-=0.5;refreshUI();}
+  function addWorkout(){workoutDays++;refreshUI();}
+  function subWorkout(){if(workoutDays>0)workoutDays--;refreshUI();}
+  function addWater(){waterMl=Math.min(3000,waterMl+250);refreshUI();}
+  function subWater(){waterMl=Math.max(0,waterMl-250);refreshUI();}
+  function resetFat(){if(confirm("Reset perte de gras ?")){fatLost=0;refreshUI();}}
+  function resetMuscle(){if(confirm("Reset gain musculaire ?")){muscleGained=0;refreshUI();}}
+  function resetDays(){if(confirm("Reset constance ?")){workoutDays=0;refreshUI();}}
+  function resetWater(){if(confirm("Reset hydratation ?")){waterMl=0;refreshUI();}}
+  function addCustomExercise(){
+    let name=prompt("Nom de l'exercice");if(!name)return;
+    let target=parseFloat(prompt("Objectif","10"));if(isNaN(target))target=10;
+    let unit=prompt("Unité","reps");
+    exercises.push({name,target,unit:unit||"reps",current:0,rpe:0});
     refreshUI();
   }
-  function autoProgress() {
-    let changed = false;
-    exercises.forEach(ex => { if(ex.current >= ex.target) { ex.target += Math.ceil(ex.target*0.1); changed=true; } });
-    if(changed) { refreshUI(); alert("⚡ Objectifs augmentés automatiquement !"); }
-    else alert("Aucun objectif atteint pour le moment");
+  function autoProgress(){
+    let changed=false;
+    exercises.forEach(ex=>{if(ex.current>=ex.target){ex.target+=Math.ceil(ex.target*0.1);changed=true;}});
+    if(changed){refreshUI();alert("Objectifs augmentés !");}else alert("Aucun objectif atteint");
   }
-
-  // ========== EXPORT TXT STRUCTURÉ ==========
-  function exportDataTxt() {
-    let content = "=== TRANSFORMATION FIT - EXPORT DES DONNÉES ===\n\n";
-    content += `Date d'export : ${new Date().toLocaleString()}\n`;
-    content += `Poids actuel : ${computeWeight()} kg\n`;
-    content += `Perte de gras : ${fatLost} kg / 10 kg\n`;
-    content += `Gain musculaire : ${muscleGained} kg / 5 kg\n`;
-    content += `Jours de constance : ${workoutDays} jours\n`;
-    content += `Hydratation : ${waterMl} ml / 3000 ml\n\n`;
-    content += "=== PROGRAMME D'ENTRAÎNEMENT ===\n";
-    exercises.forEach(ex => {
-      const percent = ex.target > 0 ? Math.round((ex.current/ex.target)*100) : 0;
-      content += `${ex.name} : ${ex.current}/${ex.target} ${ex.unit} (${percent}% - RPE:${ex.rpe}/5)\n`;
-    });
-    content += "\n=== HISTORIQUE DES REPAS ANALYSÉS ===\n";
-    if(mealHistory.length === 0) content += "Aucun repas enregistré.\n";
-    else mealHistory.forEach(m => {
-      content += `[${m.date}] ${m.description} | Protéines: ${m.protein}g | Calories: ${m.calories} kcal\n`;
-    });
-    content += "\n=== CONSEILS CLÉS ===\n";
-    content += "- Augmente l'intensité progressivement pour éviter les blessures\n";
-    content += "- Dors 7-8 heures chaque nuit pour la récupération\n";
-    content += "- La constance bat la perfection — sois là chaque jour\n";
-    content += "- Ne te prive pas — ton corps a besoin d'énergie\n";
-    content += "- Suis tes progrès chaque mois : photos, poids, force\n";
-    content += "- Mise sur le long terme, pas sur des résultats rapides\n";
-    content += "- Mange des protéines à chaque repas\n";
-    content += "- Intègre des étirements et de la mobilité 2x/semaine\n";
-    const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `fit_export_${new Date().toISOString().slice(0,19)}.txt`; a.click(); 
-    URL.revokeObjectURL(url);
+  function saveInitialWeight(){let w=parseFloat(document.getElementById("initialWeightInput").value);if(!isNaN(w)&&w>20&&w<300){initialWeight=w;refreshUI();alert(`Poids initial: ${initialWeight} kg`);}else alert("Poids invalide");}
+  function saveHeight(){let h=parseFloat(document.getElementById("heightInput").value);if(!isNaN(h)&&h>50&&h<250){height=h;refreshUI();alert(`Taille: ${height} cm`);}else alert("Taille invalide");}
+  
+  function exportDataTxt(){
+    let content=`=== TRANSFORMATION FIT ===\nDate: ${new Date().toLocaleString()}\nPoids initial: ${initialWeight} kg\nTaille: ${height} cm\nPoids actuel: ${computeCurrentWeight()} kg\nIMC: ${computeIMC()}\nPerte gras: ${fatLost}/10 kg | Muscle: ${muscleGained}/5 kg | Constance: ${workoutDays} j | Eau: ${waterMl}/3000 ml\n\n=== EXERCICES ===\n${exercises.map(ex=>`${ex.name}: ${ex.current}/${ex.target} ${ex.unit} (RPE:${ex.rpe}/5)`).join("\n")}\n\n=== REPAS ===\n${mealHistory.map(m=>`[${m.date}] ${m.description} | Prot:${m.protein}g | Cal:${m.calories} kcal`).join("\n")||"Aucun repas"}`;
+    let blob=new Blob([content],{type:"text/plain"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`fit_export_${Date.now()}.txt`;a.click();URL.revokeObjectURL(blob);
   }
+  function importTxt(file){let reader=new FileReader();reader.onload=e=>{alert("Fichier importé");};reader.readAsText(file);}
+  
+  function applyTheme(){document.body.classList.remove("theme-sombre","theme-clair");document.body.classList.add(theme==="sombre"?"theme-sombre":"theme-clair");}
+  function toggleTheme(){theme=theme==="sombre"?"clair":"sombre";applyTheme();saveAll();}
+  function applyZoom(){document.body.style.fontSize=currentZoom+"%";document.getElementById("zoomLevel").innerText=currentZoom+"%";saveAll();}
+  function zoomIn(){if(currentZoom<=150){currentZoom+=10;applyZoom();}}
+  function zoomOut(){if(currentZoom>=70){currentZoom-=10;applyZoom();}}
+  function zoomReset(){currentZoom=100;applyZoom();}
+  function renderTips(){let tips=["📈 Augmente l'intensité","😴 Dors 7-8h","⭐ Constance > perfection","🍽️ Ne te prive pas","📸 Photos mensuelles","⏳ Long terme","🥗 Protéines chaque repas","🧘 Mobilité 2x/semaine"];document.getElementById("tipsBox").innerHTML=`<h3>💡 CONSEILS CLÉS</h3><div style="display:flex;flex-wrap:wrap;gap:0.6rem;">${tips.map(t=>`<div class="tip-item">💡 ${t}</div>`).join("")}</div>`;}
 
-  // ========== IMPORT TXT ==========
-  function importTxt(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const content = e.target.result;
-        alert("✅ Fichier texte importé avec succès !\nLes données structurées peuvent être restaurées via l'export précédent.");
-        console.log("Contenu importé:", content.substring(0, 300));
-      } catch(err) { alert("Erreur lors de la lecture du fichier"); }
-    };
-    reader.readAsText(file);
+  function bindEvents(){
+    document.getElementById("themeToggleBtn").onclick=toggleTheme;
+    document.getElementById("zoomInBtn").onclick=zoomIn;document.getElementById("zoomOutBtn").onclick=zoomOut;document.getElementById("zoomResetBtn").onclick=zoomReset;
+    document.getElementById("exportDataBtn").onclick=exportDataTxt;document.getElementById("triggerImportBtn").onclick=()=>document.getElementById("importFileInput").click();
+    document.getElementById("importFileInput").onchange=e=>{if(e.target.files[0])importTxt(e.target.files[0]);};
+    document.getElementById("addFatBtn").onclick=addFat;document.getElementById("subFatBtn").onclick=subFat;document.getElementById("resetFatBtn").onclick=resetFat;
+    document.getElementById("addMuscleBtn").onclick=addMuscle;document.getElementById("subMuscleBtn").onclick=subMuscle;document.getElementById("resetMuscleBtn").onclick=resetMuscle;
+    document.getElementById("addWorkoutBtn").onclick=addWorkout;document.getElementById("subWorkoutBtn").onclick=subWorkout;document.getElementById("resetDaysBtn").onclick=resetDays;
+    document.getElementById("addWaterBtn").onclick=addWater;document.getElementById("subWaterBtn").onclick=subWater;document.getElementById("resetWaterBtn").onclick=resetWater;
+    document.getElementById("addCustomExerciseBtn").onclick=addCustomExercise;document.getElementById("autoProgressBtn").onclick=autoProgress;
+    document.getElementById("resetProgramBtn").onclick=resetProgram;
+    document.getElementById("saveWeightBtn").onclick=saveInitialWeight;document.getElementById("saveHeightBtn").onclick=saveHeight;
+    document.getElementById("clearHistoryBtn").onclick=()=>{if(confirm("Effacer historique repas ?")){mealHistory=[];renderMealHistory();saveAll();}};
+    document.getElementById("analyzeMealBtn").onclick=()=>{let d=document.getElementById("mealDescription").value;if(!d.trim()){alert("Décris ton repas");return;}let r=analyzeMeal(d);document.getElementById("mealResult").innerHTML=`<strong>📊 Analyse:</strong><br>🥚 Protéines: ${r.protein}g<br>🔥 Calories: ${r.calories} kcal<br><small>${r.details.join(" | ")}</small>`;};
+    document.getElementById("addToLogBtn").onclick=()=>{let d=document.getElementById("mealDescription").value;if(!d.trim()){alert("Analyse d'abord");return;}let r=analyzeMeal(d);addMealToHistory(d,r.protein,r.calories,r.details);document.getElementById("mealDescription").value="";document.getElementById("mealResult").innerHTML="<i>✅ Ajouté !</i>";};
+    document.getElementById("activityLevel").onchange=()=>{calcCalories();refreshUI();};
   }
-
-  // ========== THEME & ZOOM ==========
-  function applyTheme() { document.body.classList.remove("theme-sombre","theme-clair"); document.body.classList.add(theme==="sombre"?"theme-sombre":"theme-clair"); }
-  function toggleTheme() { theme = theme==="sombre"?"clair":"sombre"; applyTheme(); saveAll(); }
-  function applyZoom() { document.body.style.fontSize = currentZoom+"%"; document.getElementById("zoomLevel").innerText = currentZoom+"%"; saveAll(); }
-  function zoomIn() { if(currentZoom<=150) { currentZoom+=10; applyZoom(); } }
-  function zoomOut() { if(currentZoom>=70) { currentZoom-=10; applyZoom(); } }
-  function zoomReset() { currentZoom=100; applyZoom(); }
-
-  // ========== CONSEILS (sans "note tes performances") ==========
-  function renderTips() {
-    const tips = [
-      "📈 Augmente l'intensité progressivement", "😴 Dors 7-8h pour la récupération",
-      "⭐ La constance bat la perfection", "🍽️ Ne te prive pas, mange assez",
-      "📸 Photos mensuelles pour voir l'évolution", "⏳ Résultats sur le long terme",
-      "🥗 Protéines à chaque repas", "🧘 Mobilité 2x/semaine"
-    ];
-    document.getElementById("tipsBox").innerHTML = `<h3>💡 CONSEILS CLÉS POUR RÉUSSIR</h3>
-    <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.8rem;">${tips.map(t => `<div class="tip-item">💡 ${t}</div>`).join("")}</div>`;
-  }
-
-  // ========== EVENTS ==========
-  function bindEvents() {
-    document.getElementById("themeToggleBtn").onclick = toggleTheme;
-    document.getElementById("zoomInBtn").onclick = zoomIn;
-    document.getElementById("zoomOutBtn").onclick = zoomOut;
-    document.getElementById("zoomResetBtn").onclick = zoomReset;
-    document.getElementById("exportDataBtn").onclick = exportDataTxt;
-    document.getElementById("triggerImportBtn").onclick = () => document.getElementById("importFileInput").click();
-    document.getElementById("importFileInput").onchange = (e) => { if(e.target.files[0]) importTxt(e.target.files[0]); };
-    document.getElementById("addFatBtn").onclick = addFat;
-    document.getElementById("subFatBtn").onclick = subFat;
-    document.getElementById("resetFatBtn").onclick = resetFat;
-    document.getElementById("addMuscleBtn").onclick = addMuscle;
-    document.getElementById("subMuscleBtn").onclick = subMuscle;
-    document.getElementById("resetMuscleBtn").onclick = resetMuscle;
-    document.getElementById("addWorkoutBtn").onclick = addWorkout;
-    document.getElementById("subWorkoutBtn").onclick = subWorkout;
-    document.getElementById("resetDaysBtn").onclick = resetDays;
-    document.getElementById("addWaterBtn").onclick = addWater;
-    document.getElementById("subWaterBtn").onclick = subWater;
-    document.getElementById("resetWaterBtn").onclick = resetWater;
-    document.getElementById("addCustomExerciseBtn").onclick = addCustomExercise;
-    document.getElementById("autoProgressBtn").onclick = autoProgress;
-    document.getElementById("resetAllExercisesBtn").onclick = resetAllExercises;
-    document.getElementById("clearHistoryBtn").onclick = () => { if(confirm("Effacer tout l'historique des repas ?")) { mealHistory = []; renderMealHistory(); saveAll(); } };
-    
-    document.getElementById("analyzeMealBtn").onclick = () => {
-      const desc = document.getElementById("mealDescription").value;
-      if(!desc.trim()) { alert("Décris ton repas !"); return; }
-      const result = analyzeMeal(desc);
-      lastAnalyzed = { desc, result };
-      document.getElementById("mealResult").innerHTML = `
-        <strong>📊 Analyse du repas :</strong><br>
-        🥚 Protéines estimées : ${result.protein} g<br>
-        🔥 Calories estimées : ${result.calories} kcal<br>
-        <small>⚠️ Basé sur les aliments reconnus</small>
-      `;
-    };
-    
-    document.getElementById("addToLogBtn").onclick = () => {
-      const desc = document.getElementById("mealDescription").value;
-      if(!desc.trim()) { alert("Analyse un repas d'abord !"); return; }
-      const result = analyzeMeal(desc);
-      addMealToHistory(desc, result.protein, result.calories);
-      document.getElementById("mealDescription").value = "";
-      document.getElementById("mealResult").innerHTML = "<i>Repas ajouté à l'historique !</i>";
-    };
-    
-    document.getElementById("activityLevel").onchange = () => { calcCaloriesAndProteins(); refreshUI(); };
-  }
-
-  // ========== INIT ==========
-  function init() {
-    loadAll();
-    renderTips();
-    renderMealHistory();
-    refreshUI();
-    bindEvents();
-  }
+  function init(){loadAll();renderTips();renderMealHistory();refreshUI();bindEvents();}
   init();
 </script>
 </body>
